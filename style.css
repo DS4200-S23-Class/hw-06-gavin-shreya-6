@@ -1,3 +1,15 @@
 * {
 	font: Arial;
 }
+
+#headers {
+	text-align: center;
+}
+
+.columns {
+	display: flex;
+}
+
+.column {
+	width: 33%;
+}
