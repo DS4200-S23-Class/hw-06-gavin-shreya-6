@@ -10,6 +10,18 @@
 	display: flex;
 }
 
-.column {
+.column1, .column2, .column3 {
 	width: 33%;
+}
+
+.setosa {
+	fill: purple;
+}
+
+.versicolor {
+	fill: orangered;
+}
+
+.virginica {
+	fill: green;
 }
