@@ -99,7 +99,7 @@ d3.csv("data/iris.csv").then((data) => {
 
 
 	// Create the circles and title for graph 1
-  firstGraph.selectAll("circle")
+  const firstCircles = firstGraph.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
@@ -116,7 +116,7 @@ d3.csv("data/iris.csv").then((data) => {
     .text("Petal Length vs Sepal Length");
 
 	// Create the circles and title for graph 2
-  const circles = secondGraph.selectAll("circle")
+  const secCircles = secondGraph.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
@@ -124,7 +124,6 @@ d3.csv("data/iris.csv").then((data) => {
     .attr("cy", (d) => SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top)
     .attr("r", 5)
     .attr("class", (d) => d.Species)
-    .attr("stroke-width", 3)
     .attr("opacity", 0.5);
 
   secondGraph.append("text")
@@ -153,5 +152,37 @@ d3.csv("data/iris.csv").then((data) => {
     .attr("y", MARGINS.top - 25)
     .style("font-size", "24px")
     .text("Count of Iris Species");
-		
+
+  // Add the brushing and linking
+  const brush = d3.brush()
+    .extent([[MARGINS.left, MARGINS.top], [visW + MARGINS.left, visH + MARGINS.top]])
+    .on("start brush", brushed);
+  secondGraph.append("g")
+    .attr("class", "brush")
+    .call(brush);
+
+  function brushed(event) {
+    const selection = event.selection;
+    if (!selection) return;
+    
+    secCircles.attr("stroke", (d) => {
+        return brushedPoint(selection, SCALED_PETAL_WIDTH(d["Petal_Width"]) + MARGINS.left, SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top) ? "orange" : "none";
+       })
+      .attr("stroke-width", (d) => {
+        return brushedPoint(selection, SCALED_PETAL_WIDTH(d["Petal_Width"]) + MARGINS.left, SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top) ? 2 : 0;
+      });
+
+    firstCircles.attr("stroke", (d) => {
+      return brushedPoint(selection, SCALED_PETAL_WIDTH(d["Petal_Width"]) + MARGINS.left, SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top) ? "orange" : "none";
+    })
+      .attr("stroke-width", (d) => {
+        return brushedPoint(selection, SCALED_PETAL_WIDTH(d["Petal_Width"]) + MARGINS.left, SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top) ? 2 : 0;
+      });
+  }
+	
 });
+
+function brushedPoint(selection, x, y) {
+  return (selection[0][0] <= x && x <= selection[1][0]) 
+  && (selection[0][1] <= y && y <= selection[1][1]);
+}
