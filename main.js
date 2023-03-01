@@ -161,10 +161,12 @@ d3.csv("data/iris.csv").then((data) => {
     .attr("class", "brush")
     .call(brush);
 
+  // function called once the brush is made
   function brushed(event) {
     const selection = event.selection;
     if (!selection) return;
     
+    // border the circles in graph 2
     secCircles.attr("stroke", (d) => {
         return brushedPoint(selection, SCALED_PETAL_WIDTH(d["Petal_Width"]) + MARGINS.left, SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top) ? "orange" : "none";
        })
@@ -172,6 +174,7 @@ d3.csv("data/iris.csv").then((data) => {
         return brushedPoint(selection, SCALED_PETAL_WIDTH(d["Petal_Width"]) + MARGINS.left, SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top) ? 2 : 0;
       });
 
+    // border the circles in graph 1 if they're bordered in graph 2
     firstCircles.attr("stroke", (d) => {
       return brushedPoint(selection, SCALED_PETAL_WIDTH(d["Petal_Width"]) + MARGINS.left, SCALED_SEPAL_WIDTH(d["Sepal_Width"]) + MARGINS.top) ? "orange" : "none";
     })
@@ -182,6 +185,7 @@ d3.csv("data/iris.csv").then((data) => {
 	
 });
 
+// function to check if a point is within the selection
 function brushedPoint(selection, x, y) {
   return (selection[0][0] <= x && x <= selection[1][0]) 
   && (selection[0][1] <= y && y <= selection[1][1]);
